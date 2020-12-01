@@ -1,6 +1,8 @@
 import os
 import glob
+import sys
 import time
+import traceback
 from typing import Generator
 
 import requests
@@ -28,6 +30,14 @@ class AOCDay:
     output_filename = ""
     input_data = None
 
+    # Set to True to always print debug, or a combination of "1", "2", and "c" to print debug for part 1, 2, or common.
+    # E.g. the value "1c" will print debug for part 1 and common.
+    print_debug = False
+
+    _running_common = False
+    _running_part1 = False
+    _running_part2 = False
+
     def __init__(self, year, day_number, session_token):
         self.year = year
         self.day_number = day_number
@@ -40,6 +50,22 @@ class AOCDay:
         else:
             self.output_filename = os.path.join(os.path.dirname(__file__),
                                                 "../outputs/day{}_{}_{}".format(self.day_number, "output", self.creator))
+
+    def log(self, msg):
+        print(msg)
+
+    def debug(self, msg):
+        if self.print_debug == True or (
+                type(self.print_debug) == str and (
+                    (self._running_common and "c" in self.print_debug) or
+                    (self._running_part1 and "1" in self.print_debug) or
+                    (self._running_part2 and "2" in self.print_debug)
+                )
+            ):
+            print(msg)
+
+    def error(self, msg):
+        print(msg, file=sys.stderr)
 
     def download_input(self):
         if os.path.isfile(self.input_filename):
@@ -79,46 +105,79 @@ class AOCDay:
             input_data = self.input_data
 
             start_time = time.time()
-            common = self.common(input_data)
-            if common:
-                dprint("== Common ==")
-                for x in common:
-                    dprint(x)
+            exception_or_output = False
+            test_exception = False
+            try:
+                test = self.test(input_data)
+                if test:
+                    dprint("== Tests Output ==")
+                    exception_or_output = True
+                    for x in test:
+                        dprint(x)
+            except Exception as e:
+                dprint("== Tests Error ==")
+                dprint(''.join(traceback.format_exception(None, e, e.__traceback__)))
+                exception_or_output = True
+                test_exception = True
+            if exception_or_output:
+                dprint("== Tests ran in {:.3f} ms ==".format((time.time() - start_time) * 1000))
                 dprint("")
-    
-            dprint("== Part 1 ==")
-            part1 = self.part1(input_data)
-            printed = False
-            if part1:
-                for x in part1:
-                    if not printed:
-                        printed = True
-                    dprint(x)
-            if not printed:
-                dprint("(no output)")
-            dprint("== Ran in {:.3f} ms ==".format((time.time() - start_time)*1000))
-            dprint("")
 
-            start_time = time.time()
-            common = self.common(input_data)
-            if common:
-                dprint("== Common ==")
-                for x in common:
-                    dprint(x)
+            if test_exception:
+                dprint("== NOT RUNNING PARTS BECAUSE OF TEST ERRORS ==")
+            else:
+                self._running_common = True
+                start_time = time.time()
+                common = self.common(input_data)
+                if common:
+                    dprint("== Common ==")
+                    for x in common:
+                        dprint(x)
+                    dprint("")
+                self._running_common = False
+
+                dprint("== Part 1 ==")
+                self._running_part1 = True
+                part1 = self.part1(input_data)
+                printed = False
+                if part1:
+                    for x in part1:
+                        if not printed:
+                            printed = True
+                        dprint(x)
+                if not printed:
+                    dprint("(no output)")
+                dprint("== Ran in {:.3f} ms ==".format((time.time() - start_time)*1000))
+                self._running_part1 = False
                 dprint("")
-    
-            dprint("== Part 2 ==")
-            part2 = self.part2(input_data)
-            printed = False
-            if part2:
-                for x in part2:
-                    if not printed:
-                        printed = True
-                    dprint(x)
-            if not printed:
-                dprint("(no output)")
-            dprint("== Ran in {:.3f} ms ==".format((time.time() - start_time)*1000))
-            dprint("")
+
+                self._running_common = True
+                start_time = time.time()
+                common = self.common(input_data)
+                if common:
+                    dprint("== Common ==")
+                    for x in common:
+                        dprint(x)
+                    dprint("")
+                self._running_common = False
+
+                dprint("== Part 2 ==")
+                self._running_part2 = True
+                part2 = self.part2(input_data)
+                printed = False
+                if part2:
+                    for x in part2:
+                        if not printed:
+                            printed = True
+                        dprint(x)
+                if not printed:
+                    dprint("(no output)")
+                dprint("== Ran in {:.3f} ms ==".format((time.time() - start_time)*1000))
+                self._running_part2 = False
+                dprint("")
+
+    def test(self, input_data) -> Generator:
+        pass
 
     def common(self, input_data) -> Generator:
         pass
