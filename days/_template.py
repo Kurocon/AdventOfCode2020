@@ -4,7 +4,7 @@ DEBUG = True
 
 @day(0)
 class DayTemplate(AOCDay):
-    test_input = """""""".split("\n")
+    test_input = """""".split("\n")
 
     def common(self, input_data):
         input_data = self.test_input
