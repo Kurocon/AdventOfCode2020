@@ -3,8 +3,6 @@ from collections import Counter
 
 from days import AOCDay, day
 
-DEBUG = True
-
 @day(2)
 class Day2(AOCDay):
     test_input = """1-3 a: abcde

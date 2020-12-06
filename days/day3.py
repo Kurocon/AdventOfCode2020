@@ -1,7 +1,5 @@
 from days import AOCDay, day
 
-DEBUG = True
-
 TREE = "#"
 EMPTY = "."
 

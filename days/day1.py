@@ -1,7 +1,5 @@
 from days import AOCDay, day
 
-DEBUG = True
-
 @day(1)
 class Day1(AOCDay):
     test_input = """1721

@@ -1,9 +1,8 @@
 from days import AOCDay, day
 
-DEBUG = True
-
 @day(0)
 class DayTemplate(AOCDay):
+    print_debug = "c12"
     test_input = """""".split("\n")
 
     def common(self, input_data):

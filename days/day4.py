@@ -1,7 +1,5 @@
 from days import AOCDay, day
 
-DEBUG = True
-
 @day(4)
 class Day4(AOCDay):
     test_input = """ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
