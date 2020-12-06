@@ -10,7 +10,7 @@ class Day1(AOCDay):
 1456""".split("\n")
 
     def test(self, input_data):
-        self.input_data = list(map(int, self.test_input))
+        self.input_data = self.common(self.test_input)
         assert list(self.part1(self.input_data)) == [514579], f'{list(self.part1(self.input_data))} != [514579]'
         assert list(self.part2(self.input_data)) == [241861950], f'{list(self.part2(self.input_data))} != [241861950]'
 
