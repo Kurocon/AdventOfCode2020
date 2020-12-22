@@ -56,7 +56,7 @@ class AOCDay:
 
     def debug(self, msg):
         if self.print_debug == True or (
-                type(self.print_debug) == str and (
+                type(self.print_debug) == str and self.print_debug != "" and (
                     (self._running_common and "c" in self.print_debug) or
                     (self._running_part1 and "1" in self.print_debug) or
                     (self._running_part2 and "2" in self.print_debug)
