@@ -99,19 +99,25 @@ wseweeenwnesenwwwswnew""".split("\n")
 
     def flip_day(self):
         new_grid = {}
-        for x in range(self.min_x - 2, self.max_x + 2):
-            for y in range(self.min_y - 2, self.max_y + 2):
-                try:
-                    tile = self.grid[(x, y)]
-                except KeyError:
-                    tile = True
-                black = self.count_black_neighbours(x, y)
-                if not tile and black == 0 or black > 2:
-                    new_grid[(x, y)] = True
-                elif tile and black == 2:
-                    new_grid[(x, y)] = False
-                else:
-                    new_grid[(x, y)] = tile
+
+        to_check = set()
+        for x, y in self.grid.keys():
+            to_check.add((x, y))
+            for dx, dy in self.NEIGHBOURS:
+                to_check.add((x + dx, y + dy))
+
+        for x, y in to_check:
+            try:
+                tile = self.grid[(x, y)]
+            except KeyError:
+                tile = True
+            black = self.count_black_neighbours(x, y)
+            if not tile and black == 0 or black > 2:
+                new_grid[(x, y)] = True
+            elif tile and black == 2:
+                new_grid[(x, y)] = False
+            else:
+                new_grid[(x, y)] = tile
         self.grid = new_grid
 
     def common(self, input_data):
